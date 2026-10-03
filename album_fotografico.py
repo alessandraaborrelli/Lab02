@@ -70,15 +70,31 @@ def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
     return nuova_foto
 
 
-
 def cerca_foto(album, codice):
     """Cerca una foto nell'album dato il codice"""
     # TODO
+    # il ciclo esterno scorre gli anni dentro l'album mentre quello interno scorre le singole foto
+    # presenti nella lista di quell'anno
+    for anno in album:
+        for foto in album[anno]:
+            if foto['codice'] == codice:
+                return foto['codice'] + "," + foto['titolo'] + "," + foto['autore'] + "," + str(foto['mese']) + "," + str(foto['anno'])
+
+    return False
 
 
 def elenco_foto_anno_per_titolo(album, anno):
     """Ordina i titoli delle foto di un dato anno in ordine alfabetico"""
     # TODO
+    if anno not in album:
+        return None
+
+    lista_titoli = []
+    for foto in album[anno]:
+        lista_titoli.append(foto['titolo'])
+
+    lista_titoli_ordinati = sorted(lista_titoli)
+    return lista_titoli_ordinati
 
 
 def main():
@@ -108,7 +124,8 @@ def main():
                 continue
 
             codice = input("Codice della foto: ").strip()
-            titolo = input("Titolo: ").strip()
+            titolo = input("Titolo: ").strip().capitalize() # per rendere la prima
+            # lettera maiuscola in modo da poter ordinare i titoli in modo corretto
             autore = input("Autore: ").strip()
             try:
                 mese = int(input("Mese (1-12): ").strip())
