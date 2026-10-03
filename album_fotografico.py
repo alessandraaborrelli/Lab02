@@ -21,7 +21,7 @@ def carica_da_file(file_path):
 
             # album ha come chiave l'anno e come valore la lista di foto scattate durante l'anno
             # se l'anno non è presente nell'album allora aggiunge la prima foto
-            # se l'anno esiste già aggiunge la foto alla lista di foto per quell'anno
+            # se l'anno esiste già aggiunge la foto alla lista di foto di quell'anno
             if anno not in album:
                 album[anno] = [foto]
             else:
@@ -34,10 +34,41 @@ def carica_da_file(file_path):
 
     return album
 
-
 def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
     """Aggiunge una foto all'album, creando l'anno al volo se non è ancora presente"""
     # TODO
+    # controllo validità mese inserito
+    if mese < 1 or mese > 12:
+        return None
+
+    # controllo se il codice è già presente nell'album
+    for anno_chiave in album:
+        for foto in album[anno_chiave]:
+            if foto['codice'] == codice:
+                return None
+
+    # aggiornamento del file
+    try:
+        fileout = open(file_path, "a") # apriamo il file per poter accodare le nuove infomazioni
+        riga = f"{codice},{titolo},{autore},{mese},{anno}\n"
+        # aggiunge la riga al fondo del nostro file con le informazioni inserite dall'utente
+        # dopo aver verificato che queste siano valide
+        fileout.write(riga)
+        fileout.close()
+    except FileNotFoundError: # eccezioni
+        print("File non trovato!")
+        return None
+
+    nuova_foto = {'codice': codice, 'titolo': titolo, 'autore': autore, 'mese': mese, 'anno': anno}
+
+    # aggiornamento del nostro album
+    if anno not in album:
+        album[anno] = [nuova_foto]
+    else:
+        album[anno].append(nuova_foto)
+
+    return nuova_foto
+
 
 
 def cerca_foto(album, codice):
