@@ -1,6 +1,38 @@
+import csv
 def carica_da_file(file_path):
     """Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
-    # TODO
+   # TODO
+    album = {} # dizionario vuoto
+    try:
+        filein = open(file_path, "r") # apertura del file
+        filein.readline() # salto l'intestazine --> legge la prima riga
+        reader = csv.reader(filein)
+
+        # codice, titolo, autore, mese, anno
+        # lettura del file
+        for riga in reader:
+            codice = riga[0]
+            titolo = riga[1]
+            autore = riga[2]
+            mese = int(riga[3])
+            anno = int(riga[4])
+
+            foto = {'codice': codice, 'titolo': titolo, 'autore': autore, 'mese': mese, 'anno': anno}
+
+            # album ha come chiave l'anno e come valore la lista di foto scattate durante l'anno
+            # se l'anno non è presente nell'album allora aggiunge la prima foto
+            # se l'anno esiste già aggiunge la foto alla lista di foto per quell'anno
+            if anno not in album:
+                album[anno] = [foto]
+            else:
+                album[anno].append(foto)
+        filein.close() # chiusura file
+
+    except FileNotFoundError: # eccezione
+        print("File non trovato!")
+        return None
+
+    return album
 
 
 def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
